@@ -233,15 +233,149 @@
 
 import cors from 'cors';
 import express from 'express';
-import { connectToDB} from "./db.js";
+import { connectToDB,db } from "./db.js";
 
 const app = express()
-app.use(cors())
+
 app.use(express.json())
 
-app.get
-('/', (req, res) => {
-    res.json(" HAI HOW ARE YOU???");
+
+
+
+app.post('/insertOne', async(req, res) => {
+    await db.collection("harika").insertOne(req.body)
+    .then((result)=>{
+        res.json(result)
+    })
+    .catch((e)=>console.log(e))
+})
+
+// app.post('/insert', async(req, res) => {
+    
+//     await db.collection("harika").insertOne({Name:req.body.name,Team:req.body.team})
+//     .then((result)=>{
+//         res.json(result)
+//     }).catch((e)=>console.log(e))
+ 
+// })
+
+app.post('/insertmany', async(req, res) => {
+    await db.collection("harika").insertMany(req.body)
+    .then((result)=>{
+        res.json(result)
+    })
+    .catch((e)=>console.log(e))
+})
+
+
+app.post('/findone', async(req, res) => {
+    await db.collection("harika").findOne({Name:"ROSHAN"})
+    .then((result)=>{
+        res.json(result)
+    })
+    .catch((e)=>console.log(e))
+})
+
+
+app.post('/findmany', async(req, res) => {
+    await db.collection("harika").find().toArray()
+    .then((result)=>{
+        res.json(result)
+    })
+    .catch((e)=>console.log(e))
+})
+app.post('/findcase1', async(req, res) => {
+    await db.collection("harika").find({Age:{$exists:false}}).toArray()
+    .then((result)=>{
+        res.json(result)
+    })
+    .catch((e)=>console.log(e))
+})
+
+app.post('/findcase2', async(req, res) => {
+    await db.collection("harika").find({Age:{$eq:"60"}}).toArray()
+    .then((result)=>{
+        res.json(result)
+    })
+    .catch((e)=>console.log(e))
+})
+
+app.post('/findcase3', async(req, res) => {
+    await db.collection("harika").find({Age:{$gte:"20"}}).toArray()
+    .then((result)=>{
+        res.json(result)
+    })
+    .catch((e)=>console.log(e))
+})
+
+app.post('/updateone', async(req, res) => {
+    await db.collection("harika").updateOne({Name:"ROSHAN"},{$set:{Salary:50000}})
+    .then((result)=>{
+        res.json(result)
+    })
+    .catch((e)=>console.log(e))
+})
+
+// app.post('/updateone', async(req, res) => {
+//     await db.collection("harika").findOneAndUpdate({Name:"teja"},{$set:{Age:20}})
+//     .then((result)=>{
+//         res.json(result)
+//     })
+//     .catch((e)=>console.log(e))
+// })
+
+app.post('/updatemany', async(req, res) => {
+    await db.collection("harika").updateMany({Age:{$gt:"18"}},{$set:{Age:25}})
+    .then((result)=>{
+        res.json(result)
+    })
+    .catch((e)=>console.log(e))
+})
+
+app.post('/deleteone', async(req, res) => {
+    await db.collection("harika").deleteOne(req.body)
+    .then((result)=>{
+        res.json(result)
+    })
+    .catch((e)=>console.log(e))
+})
+
+app.post('/deletemanyor', async(req, res) => {
+    await db.collection("harika").deleteMany({$or:[{Age:{$lt:"18"}},{Age:{$gte:"60"}}]})
+    .then((result)=>{
+        res.json(result)
+    })
+    .catch((e)=>console.log(e))
+})
+
+app.post('/deletemanyand', async(req, res) => {
+    await db.collection("harika").deleteMany({$and:[{Age:{$lt:"18"}},{Age:{$gte:"60"}}]})
+    .then((result)=>{
+        res.json(result)
+    })
+    .catch((e)=>console.log(e))
+})
+
+
+app.get('/', (req, res) => {
+    res.json(" HAI HOW ARE YOU???")
+})
+
+
+
+app.post('/login', async(req, res) => {
+    try{
+   const result= await db.collection("harika").findOne(req.body)
+    if(result){
+        res.json("Login Sucess");
+    }
+    else{
+        res.json("login failed")
+    }
+}
+    catch(e){
+        console.log("error occured")
+    }
 })
 
 
@@ -250,6 +384,10 @@ connectToDB(() => {
         console.log("server running at 9000");
     })
 })
+
+
+
+
 
 
 
