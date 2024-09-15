@@ -241,6 +241,10 @@ app.use(express.json())
 
 
 
+app.use(cors({
+  origin: 'http://localhost:3000' // URL of your frontend application
+}));
+
 
 app.post('/insertOne', async(req, res) => {
     await db.collection("harika").insertOne(req.body)
@@ -361,6 +365,23 @@ app.get('/', (req, res) => {
     res.json(" HAI HOW ARE YOU???")
 })
 
+
+app.post('/signin', async (req, res) => {
+    try {
+        const found = await db.collection("harika").findOne({ email: req.body.email });
+     console.log(found)
+        if (found && found.password === req.body.password) {
+            console.log("login successfully");
+            res.json({ message: "login successfully" });
+        } else {
+            console.log("failed to login");
+            res.json({ error: "login failed" });
+        }
+    } catch (error) {
+        console.log("error occurred");
+        res.json({ message: "login failed during login" });
+    }
+});
 
 
 app.post('/login', async(req, res) => {
